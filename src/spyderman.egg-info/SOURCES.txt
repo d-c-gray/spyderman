@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/spyderman/__init__.py
+src/spyderman/_cli.py
+src/spyderman.egg-info/PKG-INFO
+src/spyderman.egg-info/SOURCES.txt
+src/spyderman.egg-info/dependency_links.txt
+src/spyderman.egg-info/requires.txt
+src/spyderman.egg-info/top_level.txt
+tests/test_spyderman.py
