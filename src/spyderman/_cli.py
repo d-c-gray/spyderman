@@ -1,6 +1,5 @@
 import configparser
 import click
-import json
 from pathlib import Path
 from enum import Enum
 from subprocess import run
@@ -28,7 +27,7 @@ def cprint(*args, **kwargs):
 
 @click.command(name = 'spyderman')
 @click.option('--project-dir','-pd', type = Path, default = Path.cwd())
-@click.option('--version','-v',type = str, help = "What version of Spyder to use. latest or semantic version (i.e 6, 5.9, etc)", default = "latest")
+@click.option('--version','-v',type = int, help = "What (major) version of Spyder to use, grabs latest within major. Unspecified is latest major.", default =None)
 @click.option('--verbose', is_flag = True, default = False, help = "Print some info before launching")
 def spyderman(
     project_dir:Path =  Path.cwd(),
@@ -37,6 +36,7 @@ def spyderman(
     ):
     global VERBOSE
     VERBOSE = verbose
+    project_dir = project_dir.absolute().resolve()
     # try to read th ini file
     cprint('Searching for spyder ini file...')
     config = configparser.ConfigParser()
@@ -52,7 +52,7 @@ def spyderman(
             cprint(f'{EMOJIS.X.value}|{path.value}')
     if not read:
         raise Exception("Couldnt find the spyder.ini file, se with the set command.")
-    print(project_dir)
+
     # try to find the virtual environment
     cprint('Searching for venv in common patterns...')
     use_venv_path = None
@@ -69,14 +69,12 @@ def spyderman(
         raise Exception(f'No python interpreter found in directory : {project_dir}')
     
     # edit the config
-    clist = config['main_interpreter']['custom_interpreters_list']
     config['main_interpreter']['custom_interpreter'] = str(use_venv_path)
     with open(use_path,'w') as f:
         config.write(f)
 
     # launch
-    spyder_command = f'spyder@{version}'
-    run(['uvx',spyder_command])
+    run(['spyder'])
 
 if __name__ == "__main__":
     spyderman()
