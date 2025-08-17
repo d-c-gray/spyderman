@@ -6,11 +6,15 @@ from subprocess import run
 __all__ = ["spyderman"]
 
 class SPYDER_CONFIG_PATHS(Enum):
-    LINUX = Path.home()/".config/spyder-py3/config/transient.ini"
+    LINUX_USER= Path.home()/".config/spyder-py3/config/transient.ini"
+    WINDOWS_USER = Path.home()/r".spyder-py3\config\transient.ini"
 
 class COMMON_VENV_PATHS(Enum):
     LINUXDOTVENV = Path('.venv/bin/python')
-    LINUX = ('/bin/python')
+    LINUX_INSIDEVENV = Path('/bin/python')
+    WINDOWSDOTVENV = Path('.venv/Scripts/python.exe')
+    WINDOWS_INSIDEVENV = Path('Scripts/python.exe')
+
 
 MAXL_COMMON_PATHS = max([len(str(p.value)) for p in COMMON_VENV_PATHS])
 MAXL_COMMON_SPYDER = max([len(str(p.value)) for p in SPYDER_CONFIG_PATHS])
@@ -43,13 +47,14 @@ def spyderman(
     read = False
     use_path = None
     for path in SPYDER_CONFIG_PATHS:
-        try:
-            config.read(path.value)
-            read = True
-            use_path = path.value
-            cprint(f'{EMOJIS.CHECK.value}|{path.value}')
-        except FileNotFoundError:
-            cprint(f'{EMOJIS.X.value}|{path.value}')
+        if path.value.exists():
+            try:
+                config.read(path.value)
+                read = True
+                use_path = path.value
+                cprint(f'{EMOJIS.CHECK.value}|{path.value}')
+            except FileNotFoundError:
+                cprint(f'{EMOJIS.X.value}|{path.value}')
     if not read:
         raise Exception("Couldnt find the spyder.ini file, se with the set command.")
 

@@ -9,9 +9,9 @@ Note: If the program can't find the .ini file, it will fail. You will need to ha
 launched Spyder normally at least once so the files are available for this tool to
 modify.
 
-Works for latest versions of Spyder 5.X and 6.X.
-
-To use, make sure you have Spyder installed and available on your systems path:
+To use, make sure you have Spyder installed and available on your PATH.
+You will also need to manually set to "use the following
+interpreter" in Spyder's preferences. 
 
 ```
 uv tool install spyder
